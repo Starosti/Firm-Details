@@ -1,7 +1,7 @@
 # Firm-Details
 This console app is made for r/MemeEconomy and would show firm details using meme.market/api
 
-#Firm Distrubition
+# Firm Distrubition
 Update Date:13.03.2019
 
 10% of the firm's money is taxed by MemeEconomy
@@ -16,5 +16,5 @@ Update Date:13.03.2019
 
 21% of total payroll is split equally between all Floor Traders
 
-#Contact Me
+# Contact Me
 Discord: Starosti#2679
