@@ -57,39 +57,24 @@ Last Firm Distrubition Update Date:13.03.2019
             Color(ConsoleColor.Cyan);
             Console.WriteLine("Example: https://meme.market/firm.html?firm=80 is firm \"80\"");
         }
-        static void CalculateOutput(long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank)
+        static void CalculateOutput(long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM)
         {
-            if (firmName == "JP Meme Chase")
+            if (firmName == "")
             {
                 Color(ConsoleColor.Red);
-                Console.WriteLine("Wrong input!");
-                Console.ReadKey();
-                Console.Clear();
+                Console.WriteLine("This firm doesn't exist!");
                 return;
             }
-            long assoPay;
-            long execPay;
+            long floorMemPay = 0;
+            long assoPay = 0;
+            long execPay = 0;
             //calculations
             double tax = Convert.ToInt64(firmBal * 0.1);
             long payout = Convert.ToInt64((firmBal - tax) * 0.5);
             long boardPay = Convert.ToInt64((payout * 0.3) / board);
-            if (!(exec == 0))
-            {
-                execPay = Convert.ToInt64((payout * 0.28) / exec);
-            }
-            else
-            {
-                execPay = 0;
-            }            
-            if (!(asso == 0))
-            {
-                assoPay = Convert.ToInt64((payout * 0.21) / asso);
-            }
-            else
-            {
-                assoPay = 0;
-            }
-            long floorMemPay = Convert.ToInt64((payout * 0.21) / floor);
+            if (!(exec == 0)) execPay = Convert.ToInt64((payout * 0.28) / exec);        
+            if (!(asso == 0)) assoPay = Convert.ToInt64((payout * 0.21) / asso);
+            if (exec + asso + board != totalM) floorMemPay = Convert.ToInt64((payout * 0.21) / floor);
             int total = board + exec + asso + floor;
             //output
             Color(ConsoleColor.Gray);
@@ -98,7 +83,7 @@ Last Firm Distrubition Update Date:13.03.2019
             Console.WriteLine("");
             Color(ConsoleColor.Magenta);
             Console.WriteLine("Firm Name:" + firmName);
-            Console.WriteLine("Firm Rank(in leaderboard):" + rank);
+            Console.WriteLine("Firm Level:" + rank);
             Console.WriteLine("Firm Tax:"+taxP+"%");
             Console.WriteLine("Firm Balance:" + firmBal);
             Color(ConsoleColor.Gray);
@@ -142,9 +127,9 @@ Last Firm Distrubition Update Date:13.03.2019
             HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
             string jsonData = "";
             using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-            {
+            {                                 
                 StreamReader reader = new StreamReader(response.GetResponseStream());
-                jsonData = reader.ReadToEnd();
+                jsonData = reader.ReadToEnd();             
             }
             _firm = JsonConvert.DeserializeObject<Firm>(jsonData);
             return _firm;
@@ -162,7 +147,7 @@ Last Firm Distrubition Update Date:13.03.2019
                 if (CheckInt(firmNum))
                 {
                     Firm firm = GetFirm($"https://meme.market/api/firm/{firmNum}");
-                    CalculateOutput(firm.balance, firm.cfo + firm.coo + 1, firm.execs, firm.assocs, (firm.size - firm.cfo - firm.coo - 1 - firm.execs - firm.assocs), firm.name, firm.tax, firm.rank);
+                    CalculateOutput(firm.balance, firm.cfo + firm.coo + 1, firm.execs, firm.assocs, (firm.size - firm.cfo - firm.coo - 1 - firm.execs - firm.assocs), firm.name, firm.tax, firm.rank,firm.size);
                 }
                 else
                 {
