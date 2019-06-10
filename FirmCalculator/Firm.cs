@@ -21,6 +21,6 @@ namespace FirmCalculatorJson
         public int tax { get; set; }
         public int rank { get; set; }
         public bool @private { get; set; }
-        public int last_payout { get; set; }
+        public long last_payout { get; set; }
     }
 }

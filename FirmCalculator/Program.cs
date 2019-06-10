@@ -50,7 +50,7 @@ Last Firm Distribution Update Date:13.03.2019
             Color(ConsoleColor.Cyan);
             Console.WriteLine("Example: https://meme.market/firm.html?firm=80 is firm \"80\"");
         }
-        static void CalculateOutput(long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM)
+        static void CalculateOutput(long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM,bool isPrivate)
         {
             if (firmName == "")
             {
@@ -81,6 +81,7 @@ Last Firm Distribution Update Date:13.03.2019
             Console.WriteLine("Firm Name:" + firmName);
             Console.WriteLine("Firm Level:" + rank);
             Console.WriteLine("Firm Tax:"+taxP+"%");
+            Console.WriteLine("Private:"+isPrivate);
             Console.WriteLine("Firm Balance:" + firmBal.ToString(comma));
             Between();
             Color(ConsoleColor.Yellow);
@@ -146,10 +147,11 @@ DankBank:104");
                 if (CheckInt(firmNum))
                 {
                     Firm firm = GetFirm($"https://meme.market/api/firm/{firmNum}");
-                    if (firm.cfo == string.Empty) firm.board--;
-                    if (firm.coo == string.Empty) firm.board--;
+                    Console.WriteLine(firm.coo);
+                    if (firm.cfo == "0") firm.board--;
+                    if (firm.coo == "0") firm.board--;
                     //long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM
-                    CalculateOutput(firm.balance,firm.board,firm.execs,firm.assocs,firm.size-firm.execs-firm.assocs-firm.board,firm.name,firm.tax,firm.rank,firm.size);
+                    CalculateOutput(firm.balance,firm.board,firm.execs,firm.assocs,firm.size-firm.execs-firm.assocs-firm.board,firm.name,firm.tax,firm.rank,firm.size,firm.@private);
                 }
                 else
                 {
