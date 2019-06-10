@@ -128,6 +128,17 @@ Last Firm Distribution Update Date:13.03.2019
 
             while (true)
             {
+                Color(ConsoleColor.Red);
+                Console.WriteLine("");
+                Console.WriteLine("Here are some important firm IDs:");
+                Color(ConsoleColor.DarkCyan);
+                Console.WriteLine(@"
+SOL Enterprises:113
+EMPYREAN:158
+The Nameless Bank:125
+Never Gonna Give You Up:80
+Memetum Ergo Sum:117
+DankBank:104");
                 Color(ConsoleColor.Cyan);
                 Console.WriteLine("");
                 Console.Write("Enter the firm num:");
@@ -135,7 +146,10 @@ Last Firm Distribution Update Date:13.03.2019
                 if (CheckInt(firmNum))
                 {
                     Firm firm = GetFirm($"https://meme.market/api/firm/{firmNum}");
-                    CalculateOutput(firm.balance, firm.board, firm.execs, firm.assocs, (firm.size - firm.board - 1 - firm.execs - firm.assocs), firm.name, firm.tax, firm.rank,firm.size);
+                    if (firm.cfo == string.Empty) firm.board--;
+                    if (firm.coo == string.Empty) firm.board--;
+                    //long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM
+                    CalculateOutput(firm.balance,firm.board,firm.execs,firm.assocs,firm.size-firm.execs-firm.assocs-firm.board,firm.name,firm.tax,firm.rank,firm.size);
                 }
                 else
                 {
