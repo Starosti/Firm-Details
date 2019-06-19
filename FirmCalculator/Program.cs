@@ -47,8 +47,16 @@ Last Firm Distribution Update Date:13.03.2019
 
 21% of total payroll is split equally between all Floor Traders
 ");
+            Color(ConsoleColor.Green);
+            Console.Write("Example:");
             Color(ConsoleColor.Cyan);
-            Console.WriteLine("Example: https://meme.market/firm.html?firm=80 is firm \"80\"");
+            Console.Write("https://meme.market/firm.html?firm=");
+            Color(ConsoleColor.Red);
+            Console.Write("80");
+            Color(ConsoleColor.Cyan);
+            Console.Write(" is firm ");
+            Color(ConsoleColor.Red);
+            Console.WriteLine("\"80\"");
         }
         static void CalculateOutput(long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM,bool isPrivate)
         {
@@ -129,7 +137,7 @@ Last Firm Distribution Update Date:13.03.2019
 
             while (true)
             {
-                Color(ConsoleColor.Red);
+                Color(ConsoleColor.Cyan);
                 Console.WriteLine("");
                 Console.WriteLine("Here are some important firm IDs:");
                 Color(ConsoleColor.DarkCyan);
@@ -147,7 +155,6 @@ DankBank:104");
                 if (CheckInt(firmNum))
                 {
                     Firm firm = GetFirm($"https://meme.market/api/firm/{firmNum}");
-                    Console.WriteLine(firm.coo);
                     if (firm.cfo == "0") firm.board--;
                     if (firm.coo == "0") firm.board--;
                     //long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM
