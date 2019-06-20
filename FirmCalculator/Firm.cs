@@ -14,7 +14,7 @@ namespace FirmCalculatorJson
         public int size { get; set; }
         public int execs { get; set; }
         public int assocs { get; set; }
-        public int board = 3;
+        public int board { get; set; }
         public string ceo { get; set; }
         public string coo { get; set; }
         public string cfo { get; set; }
@@ -22,5 +22,9 @@ namespace FirmCalculatorJson
         public int rank { get; set; }
         public bool @private { get; set; }
         public long last_payout { get; set; }
+        public Firm()
+        {
+            board = 3;
+        }
     }
 }

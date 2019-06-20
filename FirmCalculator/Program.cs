@@ -2,16 +2,58 @@
 using System.Net;
 using Newtonsoft.Json;
 using System.IO;
+using System.Reflection;
 
 namespace FirmCalculatorJson
 {
     class Program
     {
+        static string FirmNumsAndInputString()
+        {
+            Color(ConsoleColor.Cyan);
+            Console.WriteLine(@"
+Here are some important firm IDs:");
+            Color(ConsoleColor.DarkCyan);
+            Console.WriteLine(@"
+SOL Enterprises:113
+EMPYREAN:158
+The Nameless Bank:125
+Never Gonna Give You Up:80
+Memetum Ergo Sum:117
+DankBank:104
+");
+            Color(ConsoleColor.Cyan);
+            Console.Write("Enter the firm num:");
+            return Console.ReadLine();
+        }
+        static void WrongInput()
+        {
+            Color(ConsoleColor.Red);
+            Console.WriteLine("Please write a firm number!");
+        }
         static void Color(ConsoleColor _color)
         {
             Console.ForegroundColor = _color;
         }
-
+        static void Debug(string firmNum)
+        {
+            firmNum = firmNum.Replace("debug", "");
+            firmNum = firmNum.Replace(" ", "");
+            if (CheckInt(firmNum))
+            {
+                Firm DBug = GetFirm($"https://meme.market/api/firm/{firmNum}");               
+                Type type = typeof(Firm);
+                PropertyInfo[] properties = type.GetProperties();
+                foreach (PropertyInfo property in properties)
+                {
+                    Console.WriteLine("{0} = {1}", property.Name, property.GetValue(DBug, null));
+                }
+            }
+            else
+            {
+                WrongInput();
+            }
+        }
         private static void Between()
         {
             Color(ConsoleColor.Gray);
@@ -86,8 +128,8 @@ Last Firm Distribution Update Date:13.03.2019
             //output
             Between();
             Color(ConsoleColor.Magenta);
-            Console.WriteLine("Firm Name:" + firmName);
-            Console.WriteLine("Firm Level:" + rank);
+            Console.WriteLine("Firm Name:"+firmName);
+            Console.WriteLine("Firm Level:"+rank);
             Console.WriteLine("Firm Tax:"+taxP+"%");
             Console.WriteLine("Private:"+isPrivate);
             Console.WriteLine("Firm Balance:" + firmBal.ToString(comma));
@@ -127,44 +169,32 @@ Last Firm Distribution Update Date:13.03.2019
                         new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException());
                     var jsonData = reader.ReadToEnd();
                     var _firm = JsonConvert.DeserializeObject<Firm>(jsonData);
+                    if (_firm.cfo == string.Empty) _firm.board--;
+                    if (_firm.coo == string.Empty) _firm.board--;
                     return _firm;
                 }
             }
+
         }
         static void Main()
         {
             Startup();
-
             while (true)
             {
-                Color(ConsoleColor.Cyan);
-                Console.WriteLine("");
-                Console.WriteLine("Here are some important firm IDs:");
-                Color(ConsoleColor.DarkCyan);
-                Console.WriteLine(@"
-SOL Enterprises:113
-EMPYREAN:158
-The Nameless Bank:125
-Never Gonna Give You Up:80
-Memetum Ergo Sum:117
-DankBank:104");
-                Color(ConsoleColor.Cyan);
-                Console.WriteLine("");
-                Console.Write("Enter the firm num:");
-                string firmNum = Console.ReadLine();
+                string firmNum = FirmNumsAndInputString();
                 if (CheckInt(firmNum))
                 {
                     Firm firm = GetFirm($"https://meme.market/api/firm/{firmNum}");
-                    if (firm.cfo == "0") firm.board--;
-                    if (firm.coo == "0") firm.board--;
-                    //long firmBal, int board, int exec, int asso, int floor, string firmName, int taxP,int rank,int totalM
                     CalculateOutput(firm.balance,firm.board,firm.execs,firm.assocs,firm.size-firm.execs-firm.assocs-firm.board,firm.name,firm.tax,firm.rank,firm.size,firm.@private);
+                }               
+                else if (firmNum.Contains("debug"))
+                {
+                    Debug(firmNum);                   
                 }
                 else
                 {
-                    Color(ConsoleColor.Red);
-                    Console.WriteLine("Please write a firm number!");
-                }                
+                    WrongInput();
+                }
             }
         }       
     }
