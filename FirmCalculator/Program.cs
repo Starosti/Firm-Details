@@ -13,9 +13,10 @@ namespace FirmCalculatorJson
             Color(ConsoleColor.Cyan);
             Console.WriteLine(@"
 Here are some important firm IDs:");
+            Color(ConsoleColor.DarkRed);
+            Console.WriteLine("Meme Gulag:240");
             Color(ConsoleColor.DarkCyan);
-            Console.WriteLine(@"
-SOL Enterprises:113
+            Console.WriteLine(@"SOL Enterprises:113
 EMPYREAN:158
 The Nameless Bank:125
 Never Gonna Give You Up:80
@@ -114,17 +115,36 @@ Last Firm Distribution Update Date:13.03.2019
             //calculations
             string comma = "#,###";
             double tax = Convert.ToInt64(firmBal * 0.1);
-            long payout = Convert.ToInt64((firmBal - tax) * 0.5);
-            long _boardPay = Convert.ToInt64((payout * 0.3) / board);
-            if (exec != 0) _execPay = Convert.ToInt64((payout * 0.28) / exec);        
-            if (asso != 0) _assoPay = Convert.ToInt64((payout * 0.21) / asso);
-            if (exec + asso + board != totalM) _floorMemPay = Convert.ToInt64((payout * 0.21) / floor);
+            long _payout = Convert.ToInt64((firmBal - tax) * 0.5);
+            long calculationPayout = _payout;
+
+            long _boardPay = Convert.ToInt64(calculationPayout * 0.3 / board);
+            calculationPayout -= _boardPay * board;
+
+            if (exec != 0) {
+                _execPay = Convert.ToInt64(calculationPayout * 0.4 / exec);
+                calculationPayout -= _execPay * exec;
+            }
+
+            if (asso != 0) {
+                _assoPay = Convert.ToInt64(calculationPayout * 0.5 / asso);
+                calculationPayout -= _assoPay * asso;
+            }
+
+            if (floor != 0) {
+                _floorMemPay = Convert.ToInt64(calculationPayout/ floor);
+                calculationPayout -= _floorMemPay * floor;
+            }           
+            long realPayout = _boardPay*board + _assoPay*asso + _execPay*exec + _floorMemPay*floor;
+
             string boardPay = _boardPay.ToString(comma);
             string execPay = _execPay.ToString(comma);
             string assoPay = _assoPay.ToString(comma);
             string floorMemPay = _floorMemPay.ToString(comma);
-            string _payout = payout.ToString(comma);
+            string payout = realPayout.ToString(comma);
+
             int total = board + exec + asso + floor;
+
             //output
             Between();
             Color(ConsoleColor.Magenta);
@@ -145,7 +165,7 @@ Last Firm Distribution Update Date:13.03.2019
             Console.WriteLine("Payout Tax Amount:" + tax.ToString(comma));
             Between();
             Color(ConsoleColor.Green);
-            Console.WriteLine("Total Payout Amount:" + _payout);
+            Console.WriteLine("Total Payout Amount:" + payout);
             Console.WriteLine("Board Member Payout(per member):" + boardPay);
             Console.WriteLine("Executive Payout(per member):" + execPay);
             Console.WriteLine("Associate Payout(per member):" + assoPay);
@@ -169,8 +189,8 @@ Last Firm Distribution Update Date:13.03.2019
                         new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException());
                     var jsonData = reader.ReadToEnd();
                     var _firm = JsonConvert.DeserializeObject<Firm>(jsonData);
-                    if (_firm.cfo == string.Empty) _firm.board--;
-                    if (_firm.coo == string.Empty) _firm.board--;
+                    if (_firm.cfo == string.Empty || _firm.cfo == "0") _firm.board--;
+                    if (_firm.coo == string.Empty || _firm.coo == "0") _firm.board--;
                     return _firm;
                 }
             }
